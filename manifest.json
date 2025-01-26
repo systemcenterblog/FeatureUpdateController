@@ -1,0 +1,98 @@
+{
+    "Modules": [
+        {
+            "Name": "StartMenu",
+            "Version": "1.0.0",
+            "ScriptFile": "Set-StartMenu.ps1",
+            "SupportFile": "start2.bin",
+            "ForceUpdate": "false"
+        },
+        {
+            "Name": "DefaultWallpaper",
+            "Version": "1.0.0",
+            "ScriptFile": "Set-DefaultWallpaper.ps1",
+            "SupportFile": "img0.jpg",
+            "ForceUpdate": "false"
+        },
+        {
+            "Name": "DarkTheme",
+            "Version": "1.0.0",
+            "ScriptFile": "Set-DarkTheme.ps1",
+            "SupportFile": "Set-DarkThemeRunOnce.ps1",
+            "ForceUpdate": "false"
+        },
+        {
+            "Name": "Taskbar",
+            "Version": "1.0.0",
+            "ScriptFile": "Set-Taskbar.ps1",
+            "SupportFile": "",
+            "ForceUpdate": "false"
+        },
+        {
+            "Name": "RemoveApps",
+            "Version": "1.0.0",
+            "ScriptFile": "Remove-BuiltInApps.ps1",
+            "SupportFile": "",
+            "ForceUpdate": "false"
+        }
+    ],
+    "SetupConfig": [
+        {
+            "Name": "Priority",
+            "Value": "Normal"
+        },
+        {
+            "Name": "Compat",
+            "Value": "IgnoreWarning"
+        },
+        {
+            "Name": "DynamicUpdate",
+            "Value": "Enable"
+        },
+        {
+            "Name": "ShowOOBE",
+            "Value": "None"
+        },
+        {
+            "Name": "Telemetry",
+            "Value": "Enable"
+        },
+        {
+            "Name": "Uninstall",
+            "Value": "Enable"
+        },
+        {
+            "Name": "POSTOOBE",
+            "Value": "C:\\ProgramData\\<company_name>\\FeatureUpdateController\\SetupComplete.cmd"
+        },
+        {
+            "Name": "PostRollback",
+            "Value": "C:\\ProgramData\\<company_name>\\FeatureUpdateController\\SetupRollback.cmd"
+        }
+    ],
+    "SetupConfigScriptFiles": [
+        {
+            "Type": "POSTOOBE",
+            "Name": "SetupComplete",
+            "ScriptFile": "SetupComplete.ps1"
+        }
+    ],
+    "CustomActionsConfig": {
+        "ForceUpdate": "false"
+    },
+    "CustomActions": [
+        {
+            "Type": "RunOnce",
+            "Name": "Failure",
+            "ScriptFile": "Failure.ps1"
+        }
+    ],
+    "UpdateNotifications": [
+        {
+            "Name": "RestartNotificationsAllowed2",
+            "KeyPath": "HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings",
+            "DataValue": "1",
+            "Type": "Dword"
+        }
+    ]
+}
