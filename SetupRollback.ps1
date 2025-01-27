@@ -1,15 +1,15 @@
 <#
 .SYNOPSIS
-    Main script for the Feature Update Controller responsible for running each script modules prestaged in the Feature Update Controller folder.
+    Main script that's executed in case a feature update is rolled back.
 
 .DESCRIPTION
-    Main script for the Feature Update Controller responsible for running each script modules prestaged in the Feature Update Controller folder.
+    Main script that's executed in case a feature update is rolled back.
 
 .EXAMPLE
-    .\SetupComplete.ps1
+    .\SetupRollback.ps1
 
 .NOTES
-    FileName:    SetupComplete.ps1
+    FileName:    SetupRollback.ps1
     Author:      Nickolaj Andersen
     Contact:     @NickolajA
     Created:     2024-08-26
@@ -20,8 +20,8 @@
 #>
 Begin {
     # Declare variables for logging and script name
-    $ScriptName = "SetupComplete"
-    $ScriptLogFileName = "UpgradeFailed.log"
+    $ScriptName = "SetupRollback"
+    $ScriptLogFileName = "SetupRollback.log"
 }
 Process {
     # Functions
@@ -80,41 +80,8 @@ Process {
         }
     }
 
-    # Declare variable for company name
-    $CompanyName = "<company_name>"
-
-    # Declare registry root path for version control of each modules (scripts to be executed)
-    $RegistryRootKey = "HKLM:\SOFTWARE\$($CompanyName)\FeatureUpdateController\Modules"
-
-    # Get all installed script modules from registry key
-    $InstalledModules = Get-ChildItem -Path $RegistryRootKey -ErrorAction "SilentlyContinue"
-    foreach ($ScriptModule in $InstalledModules) {
-        # Declare variables for current script module
-        $ScriptModuleName = $ScriptModule.PSChildName
-        $ScriptModuleVersion = $ScriptModule.GetValue("Version")
-        $ScriptModulePath = $ScriptModule.GetValue("Path")
-        $ScriptModuleFileName = $ScriptModule.GetValue("Name")
-        $ScriptModuleFilePath = Join-Path -Path $ScriptModulePath -ChildPath $ScriptModuleFileName
-
-        # Check if the script module is installed and ready for execution
-        Write-LogEntry -Value "Initiating checks for script module '$($ScriptModuleName)' with version '$($ScriptModuleVersion)' and script file path: $($ScriptModuleFilePath)" -Severity 1
-
-        # Check if the script module is installed and that the script file exists, if not log an error
-        if (-not(Test-Path -Path $ScriptModuleFilePath)) {
-            Write-LogEntry -Value "Script module '$($ScriptModuleName)' with version '$($ScriptModuleVersion)' is installed, but script file could not be found." -Severity 3
-        }
-        else {
-            Write-LogEntry -Value "Script module '$($ScriptModuleName)' with version '$($ScriptModuleVersion)' is installed." -Severity 1
-
-            try {
-                # Run each script module
-                Write-LogEntry -Value "Executing script module: $($ScriptModuleFilePath)" -Severity 1
-                . $ScriptModuleFilePath
-                Write-LogEntry -Value "Script module '$($ScriptModuleName)' executed successfully." -Severity 1
-            }
-            catch [System.Exception] {
-                Write-LogEntry -Value "An error occurred while attempting to run $($ScriptFile.Name). Error message: $($_.Exception.Message)" -Severity 3
-            }
-        }
-    }
+    # Log that the feature update rollback has been initiated
+    Write-LogEntry -Value "Feature update rollback initiated" -Severity 1
+    
+    # Script logic to be added here for when a feature update is rolled back
 }
