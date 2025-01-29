@@ -55,7 +55,7 @@ Feature Update Controller requires a bit of preconfiguration before it can be en
 
 # Configuration
 
-Below are the different aspects of the solution that needs to be preconfigured before it can be used in a production environment.
+Below are the required bits of the solution that needs to be preconfigured before it can be used in a production environment.
 
 ## Storage Account and Container
 
@@ -71,7 +71,9 @@ Basically, everything that's referenced within the manifest file (manifest.json)
 
 ## Manifest configuration (manifest.json)
 
-This is the central configuration file used to provide instructions to the Remediation script (Detection.ps1) executed on the devices. It must be available on a publicly available Azure Storage Account for the Remediation script download Consists of multiple configuration options, such as:
+This is the central configuration file used to provide instructions to the Remediation script (Detection.ps1) executed on the devices. It must be available on a publicly available Azure Storage Account for the Remediation script to be able to download it when it executes. 
+
+The manifest.json file consists of the following sections:
 
 - Modules
   - Scripts that are automatically executed once the upgrade progress completes, initiated by the POSTOOBE referenced script file (POSTOOBE must be specified as a property in the SetupConfig part of the manifest, pointing to the path with SetupComplete.cmd)
@@ -88,7 +90,7 @@ This is the central configuration file used to provide instructions to the Remed
 - CustomActions
   - Define the Custom Action type as either 'RunOnce' or 'Run', depending on if the script file should only be executed once or for every feature update in the future
 - UpdateNotifications
-  - 
+  - Use this to configure additional registry values on the device, e.g. for Windows 10 devices where feature update notifications are delayed up towards 24 hours after the update requires a restart (registry value is provided in the sample manifest.json)
 
 ```json
 {
@@ -165,7 +167,27 @@ $StorageAccountContainer = "<storage_account_container_name>"
 
 ## Script Modules
 
-TBA (explain each script module's purpose and their respective configuration requirements)
+Many of these script modules have been developed due to the shortcomings of Microsoft Intune, for instance where you can't set a default wallpaper and then let the end user change it. As for changing theme in Windows through Microsoft Intune, there's currently no functioning method available of accomplishing that. Same goes for removal of built-in apps and perhaps most importantly, managing the Start menu is either forced to a given configuration or non-managed, no inbetween where organizations may want to set a default Start menu layout but let their users then customize it.
+
+Feature Update Controller comes pre-loaded with a set of ready made script modules to overcome these shortcomings. These script modules should be considered samples for your organization to analyze them and modify accordingly if needed:
+
+- DarkTheme
+  - Changes the default Light theme used in Windows 11 to the Dark theme for all local user profiles
+  - Support file: Set-DarkThemeRunOnce.ps1
+- DefaultWallpaper
+  - Changes the default wallpaper to an image specified as the support file
+  - Support file: img0.jpg
+- RemoveApps
+  - Removes all built-in apps except for those specified in the allow list
+  - Support file: N/A
+- StartMenu
+  - Replaces the default Start menu layout using the community discovered method of replacing the start2.bin file
+  - Support file: start2.bin
+- TaskBar
+  - Removes unwanted configuration from the task bar, such as the Copilot icon. Built to perform these actions for all local user profiles in their respective registry hive.
+
+However, it doesn't stop there. You can create your own script modules and have them executed during a Feature Update event.
+
 
 # Setup Instructions
 1. Replace all placeholders (enclosed in `<>`) with your actual values in the following files:
@@ -182,8 +204,7 @@ TBA (explain each script module's purpose and their respective configuration req
 
 ## Notes
 - Keep the manifest file name as "manifest.json" unless you have a specific reason to change it
-- Ensure all Azure Storage account details are correct before deployment
 - Test the script in a controlled environment before wide deployment
 
 ## Support
-No support is provided for this solution. For issues and questions, please refer to the [Feature Update Controller GitHub repository](https://github.com/MSEndpointMgr/FeatureUpdateController).
+No support is provided for this solution. For issues and questions, open a new issue [here](https://github.com/MSEndpointMgr/FeatureUpdateController/issues).
