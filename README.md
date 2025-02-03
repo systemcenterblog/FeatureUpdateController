@@ -1,7 +1,7 @@
 # Overview
 Feature Update Controller is designed to streamline Windows upgrades for devices managed through Microsoft Intune. It provides centralized control over setup configurations, custom actions and script modules, ensuring a seamless and customizable upgrade experience.
 
-![image](https://github.com/user-attachments/assets/47d85500-2789-4799-9f34-00d243008656)
+![image](https://github.com/user-attachments/assets/aaefdd10-5c9d-4401-a664-f997de5d883f)
 
 # What can it do
 Due to the shortcomings of managing Windows upgrades with Microsoft Intune, the Feature Update Controller set out to overcome those and by giving administrators the following capabilities:
