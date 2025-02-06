@@ -47,7 +47,7 @@ Begin {
                     $PackageProvider = Install-PackageProvider -Name "NuGet" -Force -Verbose:$false
             
                     # Install current missing module
-                    Install-Module -Name $Module -Force -AcceptLicense -ErrorAction "Stop" -Confirm:$false -Verbose:$false
+                    Install-Module -Name $Module -Force -ErrorAction "Stop" -Confirm:$false -Verbose:$false
                 }
                 catch [System.Exception] {
                     Write-Warning -Message "An error occurred while attempting to install $($Module) module. Error message: $($_.Exception.Message)"
