@@ -1136,14 +1136,20 @@ Process {
                                                         Write-LogEntry -Value "- Installed script module '$($InstalledModuleName)' is not present in the manifest file, uninstalling" -Severity 1
 
                                                         try {
-                                                            # Remove the registry key for the script module
-                                                            Write-LogEntry -Value "- Removing registry key for installed script module '$($InstalledModuleName)' in path: $($InstalledModule.PSPath)" -Severity 1
-                                                            Remove-Item -Path $InstalledModule.PSPath -Force -Recurse -ErrorAction "Stop"
-
                                                             # Remove the module directory path
                                                             $ScriptModuleDirectoryPath = (Get-ItemProperty -Path $InstalledModule.PSPath -Name "Path").Path
                                                             Write-LogEntry -Value "- Removing module directory path for installed script module '$($InstalledModuleName)' in path: $($ScriptModuleDirectoryPath)" -Severity 1
                                                             Remove-Item -Path $ScriptModuleDirectoryPath -Force -Recurse -ErrorAction "Stop"
+                                                        }
+                                                        catch [System.Exception] {
+                                                            $ErrorMessage = "Failed to remove module directory path for script module '$($InstalledModuleName)'. Error message: $($_.Exception.Message)"
+                                                            Write-LogEntry -Value "- $($ErrorMessage)" -Severity 3
+                                                        }
+                                                        
+                                                        try {
+                                                            # Remove the registry key for the script module
+                                                            Write-LogEntry -Value "- Removing registry key for installed script module '$($InstalledModuleName)' in path: $($InstalledModule.PSPath)" -Severity 1
+                                                            Remove-Item -Path $InstalledModule.PSPath -Force -Recurse -ErrorAction "Stop"
                                                         }
                                                         catch [System.Exception] {
                                                             $ErrorMessage = "Failed to uninstall script module '$($InstalledModuleName)'. Error message: $($_.Exception.Message)"
@@ -1172,16 +1178,6 @@ Process {
                                                     # Process each installed script module and uninstall it
                                                     foreach ($RegistryInstalledModule in $RegistryInstalledModules) {
                                                         try {
-                                                            # Remove the registry key for the script module
-                                                            Write-LogEntry -Value "- Removing registry key for installed script module '$($RegistryInstalledModule.PSChildName)' in path: $($RegistryInstalledModule.PSPath)" -Severity 1
-                                                            Remove-Item -Path $RegistryInstalledModule.PSPath -Force -Recurse -ErrorAction "Stop"                                                            
-                                                        }
-                                                        catch [System.Exception] {
-                                                            $ErrorMessage = "Failed to uninstall script module '$($RegistryInstalledModule.PSChildName)'. Error message: $($_.Exception.Message)"
-                                                            Write-LogEntry -Value "- $($ErrorMessage)" -Severity 3
-                                                        }
-                                                        
-                                                        try {
                                                             # Remove the module directory path
                                                             $ScriptModuleDirectoryPath = (Get-ItemProperty -Path $InstalledModule.PSPath -Name "Path").Path
                                                             Write-LogEntry -Value "- Removing module directory path for installed script module '$($RegistryInstalledModule.PSChildName)' in path: $($ScriptModuleDirectoryPath)" -Severity 1
@@ -1191,6 +1187,16 @@ Process {
                                                             $ErrorMessage = "Failed to remove module directory path for script module '$($RegistryInstalledModule.PSChildName)'. Error message: $($_.Exception.Message)"
                                                             Write-LogEntry -Value "- $($ErrorMessage)" -Severity 3
                                                         }
+                                                        
+                                                        try {
+                                                            # Remove the registry key for the script module
+                                                            Write-LogEntry -Value "- Removing registry key for installed script module '$($RegistryInstalledModule.PSChildName)' in path: $($RegistryInstalledModule.PSPath)" -Severity 1
+                                                            Remove-Item -Path $RegistryInstalledModule.PSPath -Force -Recurse -ErrorAction "Stop"                                                            
+                                                        }
+                                                        catch [System.Exception] {
+                                                            $ErrorMessage = "Failed to uninstall script module '$($RegistryInstalledModule.PSChildName)'. Error message: $($_.Exception.Message)"
+                                                            Write-LogEntry -Value "- $($ErrorMessage)" -Severity 3
+                                                        }                                                                                                            
                                                     }
                                                 }
                                                 else {
